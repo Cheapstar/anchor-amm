@@ -12,8 +12,9 @@ pub struct Config {
     pub mint_x:Pubkey,
     pub mint_y:Pubkey,
 
-    // As per me mint_lp should also come in this , but we will see ?
-    pub mint_lp:Pubkey,
+    // Q. As per me mint_lp should also come in this , but we will see ?
+    // Ans. we don't need it as is derivable and easily verifiable so extra space not needed
+    // pub mint_lp:Pubkey,
     pub locked:bool,
 
     // Storing Bumps is a good practice

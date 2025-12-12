@@ -5,7 +5,7 @@ use crate::state::Config;
 
 
 #[derive(Accounts)]
-#[instruction(seed:u64)]
+#[instruction(seeds:u64)]
 pub struct Initialize<'info> {
     // Since ye act karega as a initializer for many things
     #[account(mut)]
@@ -17,7 +17,7 @@ pub struct Initialize<'info> {
         init,
         payer = initializer,
         space = 8 + Config::INIT_SPACE,
-        seeds = [b"config",seed.to_le_bytes().as_ref()],
+        seeds = [b"config",seeds.to_le_bytes().as_ref()],
         bump
     )]
     pub config:Account<'info,Config>,
@@ -55,3 +55,20 @@ pub struct Initialize<'info> {
 
 
 
+impl<'info> Initialize<'info> {
+    fn init(&mut self,fee:u16,seeds:u64,bumps:InitializeBumps){
+        // Initialize Bumps Basically Stores Bump of PDAs in the context
+        
+        self.config.set_inner(
+            Config { 
+                seeds, 
+                authority: Some(self.initializer.key()), 
+                fee, 
+                mint_x: self.mint_x.key(),
+                mint_y: self.mint_y.key(), 
+                locked: false, 
+                config_bump: bumps.config, 
+                lp_bump: bumps.mint_lp 
+            });
+    }
+}
